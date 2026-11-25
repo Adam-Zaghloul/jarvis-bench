@@ -23,3 +23,7 @@ and its tests run out of the box. Replace them with your own board's docs.
 | `001-*.md`, `<serial>-*.md` | Case write-ups; `*-WIP.md` are open board logs |
 | `schematics/`, `datasheets/` | Source PDFs |
 | `jarvis/` | The app |
+
+## License
+
+MIT. See [`LICENSE`](LICENSE). The vendored fonts in `jarvis/static/fonts/` are under the SIL Open Font License (see the `OFL-*.txt` files there).
