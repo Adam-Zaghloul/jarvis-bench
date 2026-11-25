@@ -295,6 +295,7 @@ class P2Trust(unittest.TestCase):
         two = "## From your docs\n\n1. Measure C64.\n2. Measure U6 pin 32.\nSend both.\n"
         self.assertTrue(jeval.check({"expect": {"type": "one_step"}}, one)[0])
         self.assertFalse(jeval.check({"expect": {"type": "one_step"}}, two)[0])
+        self.assertTrue(jeval.check({"expect": {"type": "one_step"}}, "## From your docs\n\nMeasure VIN at C10. Reply with the VIN reading.\n")[0])
         v = {"expect": {"type": "expected_verdict", "verdict": "no", "target": "test-points.md"}}
         no = "## From your docs\n\n**No. Don't probe pin 9 (XIN).** Probe pin 10 [[test-points.md#L13]].\n"
         self.assertTrue(jeval.check(v, no)[0])

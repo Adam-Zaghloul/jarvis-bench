@@ -1,0 +1,5 @@
+test_point,mode,min,max,source,note
+U3.20,dcv,,,test-points.md#L11,doc: 3.3 V released (BTN)
+R14,resistance,,,board-reference.md#L18,doc: 330 Ω
+R8,resistance,,,board-reference.md#L19,doc: 10 kΩ
+VIN,resistance,,,normally-low-impedance.md#L7,doc: 2.4 kΩ to GND (power off)

@@ -31,7 +31,7 @@ Other commands:
 | Command | What it does |
 |---|---|
 | `sh jarvis.sh backup` | Back up your bench data (see **Backup** below) |
-| `sh jarvis.sh eval` | Run the golden set (20 draft questions) against the real brain (~1 min). Results go to `jarvis/evals/results/` |
+| `sh jarvis.sh eval` | Run the golden set (13 draft questions about the demo board) against the real brain (~30 s). Results go to `jarvis/evals/results/` |
 | `sh jarvis.sh --port 8800` | Use another port |
 
 Environment options: `JARVIS_MOCK=1` (canned answers, no Claude usage) · `JARVIS_CLAUDE=/path/to/claude` (if `claude` isn't on PATH) · `JARVIS_MODEL=opus` · `JARVIS_TIMEOUT=180`. On Windows, use `set NAME=value` first.
@@ -55,7 +55,7 @@ Environment options: `JARVIS_MOCK=1` (canned answers, no Claude usage) · `JARVI
 - the spread of readings from boards you marked known-good, shown separately
 - ⚠ when your range disagrees with the doc line it cites
 
-You type the ranges; JARVIS never invents tolerances. `DEMO_A.draft.csv` has 11 candidate rows with the doc value quoted and min/max left blank. Fill one in and move it to `DEMO_A.csv`.
+You type the ranges; JARVIS never invents tolerances. For the demo board, `DEMO_A.csv` has three example ranges and `DEMO_A.draft.csv` has 4 candidate rows with the doc value quoted and min/max left blank. Fill one in and move it to `DEMO_A.csv`.
 
 **Known-good.** In the Board view, "Mark known-good" (you confirm the serial) adds that board's parsed readings to `<TYPE>_<REV>.samples.jsonl`.
 

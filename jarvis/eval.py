@@ -40,7 +40,7 @@ NOT_IN_DOCS = re.compile(
     r"|(no (?:mention|information|data|value|spec\w*|record)\b[^.\n]{0,60}\b(?:in|from) (?:your|the) (?:docs|repo|files))"
     r"|(isn't|is not|aren't|are not) (?:in|covered by) (?:your|the) (?:docs|repo)"
     r"|(nothing in (?:your|the) (?:docs|repo|files))|(not documented)", re.I)
-ASKS = re.compile(r"(send|report|tell me|give me|let me know|what (?:is|was|do you get|does it read)|reading\b.*\?|then I'?ll|wait)", re.I)
+ASKS = re.compile(r"(send|report|reply with|tell me|give me|let me know|what (?:is|was|do you get|does it read)|reading\b.*\?|then I'?ll|wait)", re.I)
 NUMBERED = re.compile(r"(?m)^\s*\d+[.)]\s+\S")
 VERDICT = re.compile(r"^(yes|no)\b", re.I)
 LABELS = ("from your docs", "from past cases", "general knowledge")
