@@ -23,7 +23,7 @@ DATE_RE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
 SERIAL_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9_-]{0,39}$")
 DOC_EXT = {".md", ".pdf", ".txt", ".csv", ".c", ".h", ".png", ".jsonl"}
 TEXT_EXT = {".md", ".txt", ".csv", ".c", ".h", ".jsonl"}
-SKIP_DIRS = {".git", "__pycache__", "node_modules"}
+SKIP_DIRS = {".git", "__pycache__", "node_modules", "docs"}   # docs/ = README images and the tools that make them
 
 _lock = threading.Lock()
 

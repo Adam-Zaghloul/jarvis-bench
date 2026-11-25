@@ -45,8 +45,11 @@ sensor-node controller board. Replace them with your own board's docs.
 
 ## Missing pieces
 
-`schematics/` holds `DEMO_Schematic.pdf` (a one-page placeholder). `datasheets/` is empty. If a question needs a
+`schematics/` holds `DEMO_Schematic.pdf` (one sheet). `datasheets/` is empty. If a question needs a
 datasheet that isn't loaded, say so rather than working from recall.
+
+`docs/` holds README images, demo-board drawings and the scripts that generate them. It is not repair
+documentation and its demo data is not a real case: never cite it.
 
 ## JARVIS (bench app in `jarvis/`)
 
