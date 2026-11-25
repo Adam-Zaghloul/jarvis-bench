@@ -1,0 +1,19 @@
+/* JARVIS tour: layout only. Colours come from app.css tokens. */
+.tour-body { margin: 0; min-height: 100vh; }
+.tour-top { display: flex; justify-content: space-between; align-items: center; padding: 14px 16px; }
+.tour-back { text-decoration: none; }
+.tour-count { font-variant-numeric: tabular-nums; opacity: 0.8; }
+.tour { max-width: 760px; margin: 0 auto; padding: 0 16px 48px; }
+.tour-note { opacity: 0.75; font-size: 0.95rem; }
+.tour-stage { min-height: 260px; padding: 24px 0 8px; }
+.tour-title { margin: 0 0 16px; font-size: 1.9rem; }
+.tour-caption { margin: 0; padding-left: 0; list-style: none; font-size: 1.25rem; line-height: 1.5; }
+.tour-caption li { margin: 0 0 12px; }
+.tour-controls { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
+.tour-hint { opacity: 0.75; font-size: 0.9rem; }
+.tour-warn { border-left: 3px solid currentColor; padding: 6px 10px; }
+.tour-warn code, .tour-note code { font-family: inherit; }
+@media (max-width: 600px) {
+  .tour-title { font-size: 1.5rem; }
+  .tour-caption { font-size: 1.1rem; }
+}

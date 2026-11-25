@@ -1,0 +1,4 @@
+test_point,mode,min,max,source,note
+C10,dcv,11.5,12.5,test-points.md#L7,bench supply
+C20,dcv,4.95,5.10,test-points.md#L8,
+C30,dcv,3.25,3.37,test-points.md#L9,

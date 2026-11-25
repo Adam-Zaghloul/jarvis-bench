@@ -1,0 +1,8 @@
+__pycache__/
+logs/
+debriefs/
+drafts/
+evals/results/*.json
+reference/*.samples.jsonl
+# holds the quick-log API token
+settings.json

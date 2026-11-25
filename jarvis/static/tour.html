@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>JARVIS tour</title>
+<link rel="icon" href="/static/orb.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/static/app.css">
+<link rel="stylesheet" href="/static/tour.css">
+</head>
+<body class="tour-body">
+
+<header class="tour-top">
+  <a class="tour-back" href="/">← Back to JARVIS</a>
+  <span class="tour-count" id="tour-count" aria-live="polite"></span>
+</header>
+
+<main class="tour" id="tour">
+  <p class="tour-note">Narrated tour. Voiceover made with the Mac's built-in <code>say</code>. Nothing here touches your logs.</p>
+
+  <section class="tour-stage" aria-live="polite">
+    <h1 class="tour-title" id="tour-title">JARVIS tour</h1>
+    <ul class="tour-caption" id="tour-caption"></ul>
+  </section>
+
+  <div class="tour-controls">
+    <button type="button" class="btn" id="tour-prev">◀ Previous</button>
+    <button type="button" class="btn btn-primary" id="tour-play">Play tour</button>
+    <button type="button" class="btn" id="tour-next">Next ▶</button>
+  </div>
+  <p class="tour-hint">Space: play or pause · ← →: previous or next · the voiceover advances on its own.</p>
+  <p class="tour-warn" id="tour-warn" hidden>Narration audio didn't load. The captions still advance, about 8 seconds each. To make the audio, run <code>python3 jarvis/tour_audio.py</code>.</p>
+
+  <audio id="tour-audio" preload="auto"></audio>
+</main>
+
+<script src="/static/tour.js"></script>
+</body>
+</html>

@@ -1,0 +1,305 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>JARVIS</title>
+<link rel="icon" href="/static/orb.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/static/app.css">
+</head>
+<body data-state="idle">
+
+<!-- Boot sequence: once per server start, ≤2 s, any key or click skips. -->
+<div id="boot" class="boot" role="dialog" aria-modal="true" aria-labelledby="boot-title" hidden>
+  <div class="boot-inner">
+    <div class="boot-orb" aria-hidden="true"><svg viewBox="0 0 100 100"><circle class="orb-halo" cx="50" cy="50" r="46"/><g class="orb-ring"><circle class="orb-seg" cx="50" cy="50" r="40" pathLength="120"/></g><g class="orb-ring2"><circle class="orb-seg2" cx="50" cy="50" r="31" pathLength="60"/></g><line class="orb-sweep" x1="50" y1="50" x2="50" y2="12"/><circle class="orb-core" cx="50" cy="50" r="16"/><circle class="orb-core-hot" cx="50" cy="50" r="7"/></svg></div>
+    <h1 id="boot-title" class="boot-title">J.A.R.V.I.S.</h1>
+    <ol class="boot-lines" id="boot-lines" aria-live="polite"></ol>
+    <div id="boot-error" class="boot-error" hidden>
+      <h2>Brain offline</h2>
+      <p id="boot-error-msg"></p>
+      <p class="hint" id="boot-error-hint"></p>
+      <p class="hint">Quick log still works. Ask, Seen before (brain pass) and Debrief need Claude Code.</p>
+      <div class="row">
+        <button type="button" id="boot-retry" class="btn">Retry check</button>
+        <button type="button" id="boot-continue" class="btn btn-primary">Continue</button>
+      </div>
+    </div>
+    <p class="boot-skip" id="boot-skip">Press any key to skip</p>
+  </div>
+</div>
+
+
+<header class="boardbar" id="boardbar">
+  <div class="orb" id="orb" role="img" aria-label="JARVIS status: idle"><svg viewBox="0 0 100 100"><circle class="orb-halo" cx="50" cy="50" r="46"/><g class="orb-ring"><circle class="orb-seg" cx="50" cy="50" r="40" pathLength="120"/></g><g class="orb-ring2"><circle class="orb-seg2" cx="50" cy="50" r="31" pathLength="60"/></g><line class="orb-sweep" x1="50" y1="50" x2="50" y2="12"/><circle class="orb-core" cx="50" cy="50" r="16"/><circle class="orb-core-hot" cx="50" cy="50" r="7"/></svg></div>
+  <div class="brand"><span class="brand-name">JARVIS</span><span class="brand-sub" id="mock-tag" hidden>MOCK</span></div>
+  <div class="board" id="board" aria-live="polite">
+    <span class="board-label">Active board</span>
+    <span class="board-type" id="board-type">—</span>
+    <span class="board-serial" id="board-serial">No board set</span>
+    <span class="board-meta" id="board-meta"></span>
+  </div>
+  <button type="button" class="btn btn-switch" id="btn-switch" aria-keyshortcuts="Alt+B">Switch board <kbd>Alt+B</kbd></button>
+  <p class="status-line" id="status-line" aria-live="polite"></p>
+  <button type="button" class="btn btn-icon" id="btn-settings" aria-label="Settings" title="Settings (Alt+,)">⚙</button>
+</header>
+
+<nav class="modes" aria-label="Modes">
+  <button type="button" class="mode" data-mode="ask" aria-keyshortcuts="Alt+1"><span>Ask</span><kbd>Alt+1</kbd></button>
+  <button type="button" class="mode" data-mode="seen" aria-keyshortcuts="Alt+2"><span>Seen before</span><kbd>Alt+2</kbd></button>
+  <button type="button" class="mode" data-mode="log" aria-keyshortcuts="Alt+3"><span>Log</span><kbd>Alt+3</kbd></button>
+  <button type="button" class="mode" data-mode="debrief" aria-keyshortcuts="Alt+4"><span>Debrief</span><kbd>Alt+4</kbd></button>
+  <button type="button" class="mode" data-mode="board" aria-keyshortcuts="Alt+5"><span>Board</span><kbd>Alt+5</kbd></button>
+  <button type="button" class="mode" data-mode="patterns" aria-keyshortcuts="Alt+6"><span>Patterns</span><kbd>Alt+6</kbd></button>
+  <button type="button" class="mode" data-mode="review" aria-keyshortcuts="Alt+7"><span>Weekly review</span><kbd>Alt+7</kbd></button>
+  <button type="button" class="mode" data-mode="health" aria-keyshortcuts="Alt+8"><span>Health</span><kbd>Alt+8</kbd></button>
+  <div class="keys">
+    <h2>Keys</h2>
+    <dl>
+      <dt><kbd>/</kbd></dt><dd>Quick log</dd>
+      <dt><kbd>Enter</kbd></dt><dd>Save / send</dd>
+      <dt><kbd>Alt+Z</kbd></dt><dd>Undo last entry</dd>
+      <dt><kbd>Alt+N</kbd></dt><dd>New question</dd>
+      <dt><kbd>Esc</kbd></dt><dd>Close / stop</dd>
+    </dl>
+    <p class="hint"><a href="/static/tour.html">Narrated tour</a></p>
+  </div>
+</nav>
+
+<main class="center">
+  <!-- ASK -->
+  <section class="pane" id="pane-ask" aria-labelledby="h-ask">
+    <h2 id="h-ask" class="pane-title">Ask the docs</h2>
+    <div class="convo" id="convo" aria-live="polite"></div>
+    <form class="ask-form" id="ask-form">
+      <label class="sr" for="ask-input">Question</label>
+      <textarea id="ask-input" rows="2" placeholder="Ask the docs… (English or français)" autocomplete="off"></textarea>
+      <div class="row">
+        <label class="toggle"><input type="checkbox" id="ask-ctx"> <span>Add active board + today's log</span></label>
+        <span class="session" id="session-tag" hidden>Follow-up mode · context kept</span>
+        <span class="grow"></span>
+        <button type="button" class="btn" id="btn-new" aria-keyshortcuts="Alt+N">New question</button>
+        <button type="button" class="btn" id="btn-followup" disabled>Follow-up</button>
+        <button type="button" class="btn btn-stop" id="btn-stop" hidden>Stop <kbd>Esc</kbd></button>
+        <button type="submit" class="btn btn-primary" id="btn-ask">Ask <kbd>Enter</kbd></button>
+      </div>
+    </form>
+  </section>
+
+  <!-- SEEN BEFORE -->
+  <section class="pane" id="pane-seen" aria-labelledby="h-seen" hidden>
+    <h2 id="h-seen" class="pane-title">Seen this before?</h2>
+    <form class="row seen-form" id="seen-form">
+      <label class="sr" for="seen-input">Symptom</label>
+      <input id="seen-input" type="text" placeholder="Symptom, e.g. status LED never blinks" autocomplete="off">
+      <button type="submit" class="btn btn-primary">Search <kbd>Enter</kbd></button>
+    </form>
+    <div id="seen-out"></div>
+  </section>
+
+  <!-- LOG -->
+  <section class="pane" id="pane-log" aria-labelledby="h-log" hidden>
+    <h2 id="h-log" class="pane-title">Bench log</h2>
+    <div class="row">
+      <label for="log-date">Day</label>
+      <input type="date" id="log-date">
+      <span class="grow"></span>
+      <button type="button" class="btn" id="btn-undo" aria-keyshortcuts="Alt+Z">Undo last <kbd>Alt+Z</kbd></button>
+    </div>
+    <ol class="entries" id="entries"></ol>
+  </section>
+
+  <!-- DEBRIEF -->
+  <section class="pane" id="pane-debrief" aria-labelledby="h-debrief" hidden>
+    <h2 id="h-debrief" class="pane-title">End-of-shift debrief</h2>
+    <div class="row">
+      <label for="deb-date">Day</label>
+      <input type="date" id="deb-date">
+      <label for="deb-lang">Language</label>
+      <select id="deb-lang"><option value="en">English</option><option value="fr">Français</option></select>
+      <span class="grow"></span>
+      <button type="button" class="btn btn-primary" id="btn-debrief">Run debrief</button>
+    </div>
+    <p class="hint">Copy only. Nothing is sent anywhere. Saved to <code>jarvis/debriefs/</code>.</p>
+    <div id="deb-out"></div>
+  </section>
+
+  <!-- BOARD: timeline, close-out, reference -->
+  <section class="pane" id="pane-board" aria-labelledby="h-board" hidden>
+    <h2 id="h-board" class="pane-title">Board</h2>
+    <div class="row">
+      <span class="hint" id="board-pane-id">No active board.</span>
+      <span class="grow"></span>
+      <button type="button" class="btn" id="btn-closeout">Close out…</button>
+      <button type="button" class="btn" id="btn-knowngood">Mark board known-good…</button>
+    </div>
+    <h3 class="section-h">Timeline</h3>
+    <ol class="timeline" id="timeline"></ol>
+    <h3 class="section-h">Close-outs for this board</h3>
+    <div id="board-closeouts"></div>
+    <h3 class="section-h">Known-good reference</h3>
+    <div id="refview"></div>
+  </section>
+
+  <!-- PATTERNS -->
+  <section class="pane" id="pane-patterns" aria-labelledby="h-patterns" hidden>
+    <h2 id="h-patterns" class="pane-title">Recurring patterns</h2>
+    <p class="hint">Built from 3+ confirmed close-outs with the same board type and a similar symptom and root cause. Verify or dismiss each one.</p>
+    <div id="patterns-out"></div>
+  </section>
+
+  <!-- WEEKLY REVIEW -->
+  <section class="pane" id="pane-review" aria-labelledby="h-review" hidden>
+    <h2 id="h-review" class="pane-title">Weekly review</h2>
+    <div class="row">
+      <label for="wk">Week</label>
+      <input type="week" id="wk">
+      <span class="grow"></span>
+      <button type="button" class="btn btn-primary" id="btn-weekly">Run weekly review</button>
+    </div>
+    <p class="hint">Copy only. Saved to <code>jarvis/debriefs/week-YYYY-WW.md</code>. The competency log is written generally, with identifiers removed.</p>
+    <div id="wk-out"></div>
+  </section>
+
+  <!-- HEALTH -->
+  <section class="pane" id="pane-health" aria-labelledby="h-health" hidden>
+    <h2 id="h-health" class="pane-title">Health</h2>
+    <h3 class="section-h">Backup</h3>
+    <div id="hl-backup"></div>
+    <h3 class="section-h">Usage</h3>
+    <div class="row">
+      <label for="hl-week">Week</label>
+      <input type="week" id="hl-week">
+    </div>
+    <div id="hl-usage"></div>
+    <h3 class="section-h">Doc audit</h3>
+    <p class="hint">Report only. JARVIS never edits your docs.</p>
+    <div id="hl-audit"></div>
+  </section>
+
+  <!-- QUICK LOG: always visible -->
+  <form class="quicklog" id="quicklog" aria-label="Quick log">
+    <span class="ql-board" id="ql-board" aria-hidden="true">—</span>
+    <label class="sr" for="ql-kind">Kind</label>
+    <select id="ql-kind">
+      <option value="">kind…</option>
+      <option value="measurement">measurement</option>
+      <option value="action">action</option>
+      <option value="observation">observation</option>
+      <option value="result">result</option>
+    </select>
+    <label class="sr" for="ql-text">Log entry</label>
+    <input id="ql-text" type="text" autocomplete="off" placeholder="Press / to log · m: a: o: r: set kind · paste or drop a photo">
+    <label class="sr" for="ql-status">Closing status</label>
+    <select id="ql-status">
+      <option value="">status…</option>
+      <option value="fixed">fixed</option>
+      <option value="escalated">escalated</option>
+      <option value="scrap">scrap</option>
+      <option value="open">open</option>
+    </select>
+    <button type="submit" class="btn btn-primary">Log <kbd>Enter</kbd></button>
+    <div class="ql-preview" id="ql-preview" hidden aria-live="polite"></div>
+    <div class="ql-photos" id="ql-photos" hidden></div>
+  </form>
+</main>
+
+<aside class="viewer" id="viewer" aria-labelledby="viewer-title">
+  <div class="viewer-head">
+    <h2 id="viewer-title" class="pane-title">Source</h2>
+    <span class="viewer-path" id="viewer-path"></span>
+    <button type="button" class="btn btn-icon" id="viewer-close" aria-label="Close source viewer">✕</button>
+  </div>
+  <div class="viewer-body" id="viewer-body" tabindex="0">
+    <p class="hint">Click a citation chip to open its source here.</p>
+  </div>
+</aside>
+
+<dialog id="dlg-board" aria-labelledby="dlg-board-title">
+  <form method="dialog" id="board-form">
+    <h2 id="dlg-board-title">Switch active board</h2>
+    <p class="hint">Every new log entry attaches to this board. Readings from the previous board stay with it.</p>
+    <label for="bd-type">Board type</label>
+    <input id="bd-type" value="DEMO" autocomplete="off">
+    <label for="bd-serial">Serial</label>
+    <input id="bd-serial" autocomplete="off" inputmode="numeric" placeholder="e.g. 10000000000011" required>
+    <div class="row two">
+      <div><label for="bd-rev">Revision</label><input id="bd-rev" autocomplete="off" placeholder="e.g. G"></div>
+      <div><label for="bd-ticket">Ticket ID (optional)</label><input id="bd-ticket" autocomplete="off" placeholder="e.g. DEMO-27826"></div>
+    </div>
+    <p class="err" id="bd-err" hidden></p>
+    <div class="row">
+      <button type="button" class="btn" id="bd-cancel">Cancel</button>
+      <button type="submit" class="btn btn-primary" value="ok">Switch</button>
+    </div>
+  </form>
+</dialog>
+
+<dialog id="dlg-closeout" aria-labelledby="dlg-closeout-title" class="wide">
+  <form method="dialog" id="closeout-form">
+    <h2 id="dlg-closeout-title">Close-out card · <span id="co-serial"></span> · <span id="co-status"></span></h2>
+    <p class="draft-banner" id="co-banner">DRAFT — pre-filled by the brain from this board's log. Edit, then confirm. Nothing is saved until you press Confirm.</p>
+    <div class="co-grid">
+      <label for="co-symptom">Symptom</label><textarea id="co-symptom" rows="2"></textarea>
+      <label for="co-root_cause">Root cause</label><textarea id="co-root_cause" rows="2"></textarea>
+      <label for="co-fix">Fix</label><textarea id="co-fix" rows="2"></textarea>
+      <label for="co-parts">Parts</label><input id="co-parts">
+      <label for="co-outcome">Outcome</label><textarea id="co-outcome" rows="2"></textarea>
+      <label for="co-ticket">Ticket ID</label><input id="co-ticket">
+      <span class="co-label">Root cause is</span>
+      <div class="row">
+        <label class="toggle"><input type="radio" name="co-rcs" value="suspected" checked> <span>Suspected</span></label>
+        <label class="toggle"><input type="radio" name="co-rcs" value="confirmed"> <span>Confirmed</span></label>
+        <span class="hint" id="co-rcs-hint"></span>
+      </div>
+    </div>
+    <div id="co-hyp" hidden></div>
+    <p class="err" id="co-err" hidden></p>
+    <div class="row"><span class="grow"></span>
+      <button type="button" class="btn" id="co-cancel">Keep as draft</button>
+      <button type="submit" class="btn btn-primary" id="co-confirm">Confirm and save</button>
+    </div>
+  </form>
+</dialog>
+
+<dialog id="dlg-confirm" aria-labelledby="dlg-confirm-title">
+  <form method="dialog" id="confirm-form">
+    <h2 id="dlg-confirm-title">Confirm</h2>
+    <p id="confirm-msg"></p>
+    <div class="row"><span class="grow"></span>
+      <button type="button" class="btn" id="confirm-no">Cancel</button>
+      <button type="submit" class="btn btn-primary" id="confirm-yes">Yes <kbd>Enter</kbd></button>
+    </div>
+  </form>
+</dialog>
+
+<dialog id="dlg-settings" aria-labelledby="dlg-settings-title">
+  <form method="dialog">
+    <h2 id="dlg-settings-title">Settings</h2>
+    <label class="toggle"><input type="checkbox" id="set-voice"> <span>Status voice (butler-style status lines)</span></label>
+    <label class="toggle"><input type="checkbox" id="set-speak"> <span>Speak answers aloud (local voices only)</span></label>
+    <label for="set-voice-name">Voice</label>
+    <select id="set-voice-name"></select>
+    <p class="hint" id="voice-note"></p>
+    <label class="toggle"><input type="checkbox" id="set-predict"> <span>Predict first: write your hypothesis before a troubleshooting answer is shown</span></label>
+    <label class="toggle"><input type="checkbox" id="set-sound"> <span>Sound effects</span></label>
+    <label class="toggle"><input type="checkbox" id="set-motion"> <span>Reduce motion (also follows your OS setting)</span></label>
+    <label for="set-lang">Debrief language</label>
+    <select id="set-lang"><option value="en">English</option><option value="fr">Français</option></select>
+    <div class="row"><span class="grow"></span><button class="btn btn-primary" value="ok">Done</button></div>
+  </form>
+</dialog>
+
+<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+<div class="switch-flash" id="switch-flash" aria-hidden="true" hidden></div>
+
+<script src="/static/md.js"></script>
+<script src="/static/app.js"></script>
+<script src="/static/v2.js"></script>
+<script src="/static/trust.js"></script>
+<script src="/static/daily.js"></script>
+<script src="/static/scan.js"></script>
+<script src="/static/capture.js"></script>
+<script src="/static/health.js"></script>
+</body>
+</html>

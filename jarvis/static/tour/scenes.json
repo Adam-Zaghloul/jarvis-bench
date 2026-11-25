@@ -1,0 +1,100 @@
+[
+  {
+    "id": "what",
+    "title": "What JARVIS is",
+    "pane": "",
+    "caption": ["A local bench assistant for board-level repair.", "It runs on this Mac only, at 127.0.0.1.", "It opens in Google Chrome."],
+    "say": "JARVIS is a bench assistant for board-level repair. It runs on this Mac only, and it opens in Google Chrome."
+  },
+  {
+    "id": "why",
+    "title": "Why it helps",
+    "pane": "",
+    "caption": ["It answers from your own repair docs.", "Every answer cites the line it came from.", "If the docs don't cover it, it says so."],
+    "say": "It answers from your own repair docs. Every answer links to the line it came from. If the docs don't cover a question, it says so instead of guessing."
+  },
+  {
+    "id": "start",
+    "title": "Starting it",
+    "pane": "",
+    "caption": ["Run: sh jarvis.sh", "Chrome opens at 127.0.0.1:8765.", "If the brain is offline, quick log, scanning and photos still work."],
+    "say": "To start it, run sh jarvis.sh from the repo root. Chrome opens by itself. If the brain shows as offline, quick log, scanning and photos still work."
+  },
+  {
+    "id": "scan",
+    "title": "Start of shift: scan the board",
+    "pane": "board",
+    "caption": ["Scan the board serial, or press Alt+B.", "JARVIS switches to that board.", "Each entry is tied to one board."],
+    "say": "Start the shift by scanning the board serial, or press Alt plus B. JARVIS switches to that board, and every entry you make is tied to it."
+  },
+  {
+    "id": "log",
+    "title": "Log readings",
+    "pane": "log",
+    "caption": ["Alt+3 opens the bench log.", "Type a test point and its reading.", "Out-of-range readings are flagged.", "Alt+Z undoes the last entry."],
+    "say": "Press Alt plus 3 for the bench log. Type a test point and its reading. A reading outside its reference range is flagged right away. Alt plus Z undoes the last entry."
+  },
+  {
+    "id": "seen",
+    "title": "Seen before",
+    "pane": "seen",
+    "caption": ["Alt+2: Seen before.", "Verified patterns come first.", "Then a keyword search over past cases and logs.", "Then a brain pass that groups the matches."],
+    "say": "Press Alt plus 2 for Seen before. Verified patterns come first, then a keyword search over past cases and logs, then a brain pass that groups the matches."
+  },
+  {
+    "id": "ask",
+    "title": "Ask, with a citation",
+    "pane": "ask",
+    "caption": ["Alt+1: Ask the docs.", "Answers come in labelled sections.", "Each citation opens the source line.", "Anything not in the docs is marked as general knowledge."],
+    "say": "Press Alt plus 1 to ask the docs. Answers come in labelled sections. Each citation opens the exact source line. Anything that is not in your docs is marked as general knowledge."
+  },
+  {
+    "id": "closeout",
+    "title": "Close-out card",
+    "pane": "board",
+    "caption": ["On the Board view, choose Close out.", "JARVIS drafts the card from the log.", "Nothing is saved until you confirm it."],
+    "say": "On the Board view, choose Close out. JARVIS drafts the card from the log. Nothing is saved until you confirm it."
+  },
+  {
+    "id": "debrief",
+    "title": "End-of-shift debrief",
+    "pane": "debrief",
+    "caption": ["Alt+4: the debrief.", "A Slack update, Jira notes, open items and photos.", "Copy only. JARVIS never sends anything."],
+    "say": "Press Alt plus 4 for the debrief. It gives you a Slack update, Jira notes, open items and photos. You copy the text yourself. JARVIS never sends anything."
+  },
+  {
+    "id": "review",
+    "title": "Weekly review",
+    "pane": "review",
+    "caption": ["Alt+7: the weekly review.", "Counts of boards, questions and debriefs.", "Top causes and recurring patterns."],
+    "say": "Press Alt plus 7 for the weekly review. It shows the week's counts, the top causes and the recurring patterns."
+  },
+  {
+    "id": "health",
+    "title": "Health",
+    "pane": "health",
+    "caption": ["Alt+8: Health.", "Backup status and weekly usage.", "A doc audit that reports stale links and never edits anything."],
+    "say": "Press Alt plus 8 for Health. It shows your backup status, weekly usage, and a doc audit. The audit reports stale links, and it never edits your docs."
+  },
+  {
+    "id": "backup",
+    "title": "Backup",
+    "pane": "",
+    "caption": ["Run: sh jarvis.sh backup", "Pick a folder outside the repo, once.", "JARVIS keeps the 10 newest backups."],
+    "say": "Run sh jarvis.sh backup to copy your bench data. Pick a folder outside the repo once. JARVIS keeps the ten newest backups."
+  },
+  {
+    "id": "trust",
+    "title": "Why you can trust it",
+    "pane": "",
+    "caption": ["Citations point to the source line.", "\"Not in docs\" is said plainly.", "Run sh jarvis.sh eval: 20 golden questions against the real brain."],
+    "say": "You can check its answers. Citations point to the source line. When the docs don't cover a question, it says so. And sh jarvis eval runs twenty golden questions against the real brain, so you can see whether it still gets them right."
+  },
+  {
+    "id": "cheat",
+    "title": "Shortcuts",
+    "pane": "",
+    "caption": ["Alt+1 Ask   Alt+2 Seen before   Alt+3 Log", "Alt+4 Debrief   Alt+5 Board   Alt+6 Patterns", "Alt+7 Weekly review   Alt+8 Health", "Alt+B Switch board   Alt+N New question", "Alt+Z Undo last entry   / Quick log", "Enter Save or send   Esc Close or stop"],
+    "say": "Here are the shortcuts. Alt plus 1 is Ask. Alt plus 2 is Seen before. Alt plus 3 is Log. Alt plus 4 is Debrief. Alt plus 5 is Board. Alt plus 6 is Patterns. Alt plus 7 is the weekly review. Alt plus 8 is Health. Alt plus B switches board. Alt plus N starts a new question. Alt plus Z undoes the last entry. Slash opens quick log. Enter saves or sends. Escape closes or stops."
+  }
+]
