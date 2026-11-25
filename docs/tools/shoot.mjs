@@ -49,7 +49,7 @@ await sleep(500);
 await js(`localStorage.setItem("jarvis.settings", JSON.stringify({voice: true, speak: false, sound: false, motion: false, predict: false, lang: "en", mode: "ask"})); sessionStorage.clear(); true`);
 await send("Page.reload");
 await sleep(800);
-if (want("boot")) { await sleep(700); await shot("boot"); }
+await sleep(700);
 await sleep(2600);
 await js(`document.dispatchEvent(new KeyboardEvent("keydown", {key: "Escape"})); true`);
 await sleep(600);

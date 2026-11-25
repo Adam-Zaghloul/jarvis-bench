@@ -46,7 +46,7 @@ sleep 2
 node docs/tools/shoot.mjs "http://127.0.0.1:$PORT/" "$DT" "$T/out"
 
 echo "5/5 resize, palette, GIF"
-for n in ask-source log seen board debrief review health boot; do
+for n in ask-source log seen board debrief review health; do
   ffmpeg -v error -y -i "$T/out/$n.png" -vf "scale=1600:-1:flags=lanczos,split[a][b];[a]palettegen=max_colors=256:stats_mode=full[p];[b][p]paletteuse=dither=none" \
     -pix_fmt pal8 "docs/images/$n.png"
 done
